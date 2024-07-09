@@ -1,53 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from 'react';
+import './App.css';
 
 interface Task {
   id: number;
-  detail: string;
-  status: string;
+  todo: string;
+  completed: boolean;
   selection: boolean;
 }
 
-// interface Tasks {
-//   task: Task[];
-// }
-
 function App() {
-  const [count, setCount] = useState(0)
-  const [tasks, setTask] = useState<Task[]>([
-    {
-     id: 123,
-     detail: "this is a task 1",
-     selection: false,
-     status: "completed" 
-    },
+  const [tasks, setTasks] = useState<Task[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
-    {
-      id: 123,
-      detail: "this is a task 2",
-      selection: false,
-      status: "completed" 
-     },
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const res = await fetch('https://dummyjson.com/todos');
+        if (!res.ok) {
+          throw new Error(`Error: ${res.status}`);
+        }
+        const data = await res.json();
+        setTasks(data.todos);
+      } catch (error: any) {
+        setError(error.message);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-     {
-      id: 123,
-      detail: "this is a task 3",
-      selection: false,
-      status: "completed" 
-     },
+    fetchData();
+  }, []);
 
-     {
-      id: 123,
-      detail: "this is a task 4",
-      selection: false,
-      status: "completed" 
-     }
-  ]);
-  const [new_tasks, setNewTasks] = useState<Task[]>([]);
+  if (loading) {
+    return <div>Loading...</div>;
+  }
 
-  
+  if (error) {
+    return <div>Error: {error}</div>;
+  }
 
   return (
     <>
@@ -78,6 +69,7 @@ function App() {
             </dt>
           </div>
           <div className="detail">
+            <div className='table-container'>
             <table className='table'>
               <thead className='head'>
                 <tr>  
@@ -88,48 +80,21 @@ function App() {
                 </tr>
               </thead>
               <tbody className='tbody'>
-                {
-                  tasks.map(
-                    t => {
-                      return (<tr>
-                        <td>{t.id}</td>
-                        <td>{t.detail}</td>
-                        <td>{t.status}</td>
-                        <td>{t.selection}</td>
-                      </tr>)
-                    }
-                  )
-                }
-
-                {/* {
-                  new_tasks.map(
-                    t => {
-                      return (<tr>
-                        <td>
-                          <input type="text" value={new_tasks.detail}></input>
-                        </td>
-                        <td>t.detail</td>
-                        <td>t.status</td>
-                        <td>t.selection</td>
-                      </tr>)
-                    }
-                  )
-                } */}
-              </tbody>
+              {tasks.map(task => (
+                <tr key={task.id}>
+                  <td>{task.id}</td>
+                  <td>{task.todo}</td>
+                  <td>{task.completed?.toString()}</td>
+                  <td>{task.selection?.toString()}</td>
+                </tr>
+              ))}
+            </tbody>
               
             </table>
+            </div>
           </div>
         </div>
       </div>
-      {/* <h1>Vite + React</h1> */}
-      {/* <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div> */}
       <p className="read-the-docs">
         Click on the Vite and React logos to learn more
       </p>

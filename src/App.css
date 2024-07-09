@@ -90,7 +90,7 @@
 }
 
 .detail {
-  width: 80%;
+  width: 100%;
   height: 100%;
   min-height: 500px;
   background-color:bisque;
@@ -99,16 +99,20 @@
   align-items: top;
 }
 
+/* App.css */
+
+.table-container {
+  max-height: 400px; /* Adjust this value to fit the number of rows you want to display */
+  overflow-y: auto;
+}
+
 .table {
-  width:100%;
-  height: 100%;
+  width: 100%;
   border-collapse: collapse;
   background-color: #ffffff;
   box-shadow: 1px 2px 4px rgba(0,0,0,0.1);
   border-radius: 8px;
-  overflow: hidden;
 }
-
 
 .head {
   background-color: #333333;
@@ -128,4 +132,8 @@ tr:hover {
 th, td {
   padding: 15px;
   text-align: left;
+}
+
+.tbody tr:nth-child(even) {
+  background-color: #bfb9b9;
 }
